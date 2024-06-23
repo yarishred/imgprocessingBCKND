@@ -1,5 +1,6 @@
 import ImagesManagement from "../Model/manageImages.js";
 import { handlePythonScripts } from "../middlewares/pythonSpawn.js";
+import { socketManager } from "../middlewares/socketManager.js";
 
 export const getImages = async (req, res) => {
   try {
@@ -20,16 +21,9 @@ export const postImage = (upload) => async (req, res) => {
       });
     });
 
-    const result = await handlePythonScripts("app.py", file.path);
-
-    console.log(result)
     const imagePath = new ImagesManagement({
       imageFile: file.path,
-      resultImage: result.data
     });
-
-    console.log(imagePath)
-    ;
 
     await imagePath.save();
 
@@ -39,9 +33,12 @@ export const postImage = (upload) => async (req, res) => {
       msg: "File uploaded successfully",
     });
   } catch (err) {
+    
     //Handling errors
     return res.status(500).json({
       msg: err,
     });
   }
 };
+
+export const postGrayScale = async (req, res) => {};

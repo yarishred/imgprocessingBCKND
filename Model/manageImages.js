@@ -7,12 +7,6 @@ const manageImagesSchema = new Schema({
     type: String,
     required: true,
   },
-  resultImage: {
-    type: String,
-  },
-  histogramImage: {
-    type: String,
-  },
 });
 
 export default mongoose.model("ImagesManagement", manageImagesSchema);
