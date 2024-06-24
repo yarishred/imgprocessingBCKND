@@ -1,5 +1,4 @@
 import { Server } from "socket.io";
-import sharp from "sharp";
 import { handlePythonScripts } from "../middlewares/pythonSpawn.js";
 
 import ImagesManagement from "../Model/manageImages.js";
@@ -30,7 +29,8 @@ export const socketManager = (server) => {
             imagePath: imagePath.imageFile,
           })
             .then((res) => {
-              socket.emit("updatedImage", res.imageOptions);
+              console.log(res)
+              socket.emit("updatedImage", res);
             })
             .catch((err) => console.log(err));
         } catch (err) {

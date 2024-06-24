@@ -1,6 +1,6 @@
 import sys
 import json
-
+import matplotlib.pyplot as plt
 import cv2
 import base64
 from io import BytesIO
@@ -31,12 +31,32 @@ def main (options):
 
 
     pil_image = Image.fromarray(adjusted_image)
-    buffer = BytesIO()
-    pil_image.save(buffer,format="JPEG")
+    buffer_grayscale = BytesIO()
+    pil_image.save(buffer_grayscale,format="JPEG")
+    img_str = base64.b64encode(buffer_grayscale.getvalue()).decode("utf-8")
 
-    img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+    #Histograma
+    hist = cv2.calcHist([adjusted_image], [0], None, [256], [0, 256])
+    # Crear la figura del histograma
+    plt.figure()
+    plt.plot(hist)
+    plt.title('Histograma')
+    plt.xlabel('Intensidad de pixel')
+    plt.ylabel('Número de pixeles')
+
+    # Guardar la figura en un objeto BytesIO
+    buffer_histogram = BytesIO()
+    plt.savefig(buffer_histogram, format='jpg')
+    plt.close()
+    hist_image = base64.b64encode(buffer_histogram.getvalue()).decode("utf-8")
+
+    imageResponse = {
+        "grayscaleImage": img_str,
+        "histogram": hist_image
+    }
         
-    return img_str
+    return json.dumps(imageResponse)
 
 result = main(image_options)
 print(result)
